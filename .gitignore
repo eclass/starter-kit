@@ -1,0 +1,39 @@
+# Git uses this file to determine which files and directories to ignore
+# https://help.github.com/articles/ignoring-files
+
+
+# System files
+# ===============
+
+/*.sublime-project
+*.sublime-workspace
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+.*
+!.gitignore
+!.bowerrc
+!.gitattributes
+!.jshintrc
+!.htaccess
+*~
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+
+# Project's files
+# ===============
+
+npm-debug.log
+bower_components
+node_modules
+dist

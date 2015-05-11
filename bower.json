@@ -1,0 +1,23 @@
+{
+  "name": "starter-kit",
+  "version": "0.1.0",
+  "authors": [
+    "Raul Hernandez <raulghm@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "modernizr": "~2.7.1",
+    "jquery-legacy": "jquery#1.11.2",
+    "jquery-modern": "jquery#2.1.3",
+    "selectivizr": "1.0.2",
+    "respond": "1.4.2"
+  },
+  "devDependencies": {    
+  }
+}
