@@ -1,9 +1,11 @@
 {
   "name": "starter-kit",
-  "version": "0.1.0",
-  "authors": [
-    "Raul Hernandez <raulghm@gmail.com>"
-  ],
+  "version": "0.1.1",
+  "author": "Raul Hernandez <raulghm@gmail.com>",
+  "contributors": [{
+    "name": "Víctor San Martín",
+    "email": "victor@eclass.com"
+  }],
   "scripts": {
     "install": "bower install",
     "start": "gulp"
@@ -32,6 +34,7 @@
     "gulp-strip-css-comments": "^1.1.0",
     "gulp-strip-debug": "~1.0.2",
     "gulp-uglify": "^1.2.0",
+    "gulp-jshint": "^1.10.0",
     "merge-stream": "^0.1.7",
     "minimist": "^1.1.1",
     "run-sequence": "^1.1.0"
