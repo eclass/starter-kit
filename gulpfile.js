@@ -1,6 +1,6 @@
 /*!
  * Gulpfile Setup
- * author: Raul Hernandez <raulghm@gmail.com, rhernandez@eclass.cl>
+ * author: Raúl Hernández <raulghm@gmail.com, rhernandez@eclass.com>
  */
 
 'use strict';
@@ -46,13 +46,13 @@ var reload = browserSync.reload;
 
 // JSHint
 function jshint(files) {
-  return function () {
-    return gulp.src(files)
-      .pipe(reload({stream: true, once: true}))
-      .pipe($.jshint())
-      .pipe($.jshint.reporter('default'))
-      .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
-  };
+	return function () {
+		return gulp.src(files)
+			.pipe(reload({stream: true, once: true}))
+			.pipe($.jshint())
+			.pipe($.jshint.reporter('default'))
+			.pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+	};
 }
 
 // Clean up
@@ -166,7 +166,7 @@ gulp.task('watch', function () {
 	watch = true;
 });
 
-// BrowserSync
+// Serve task
 gulp.task('serve', ['build'], function () {
 	if (!RELEASE) {
 		browserSync.init({
