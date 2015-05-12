@@ -16,11 +16,14 @@ Boilerplate básico basado en Gulp para crear sites/apps, evitando realizar tare
 
 ## Uso
 
-* Clonar 
+* Clonar https://github.com/eclass/starter-kit.git
 * Instalar dependencias: ```npm install```
 * Iniciar ambiente de desarrollo: ```gulp```
 * Ir a: http://127.0.0.1:3000
-* Para distribuir a ambiente de producción: ```gulp --dist``
+* Para distribuir a ambiente de producción: ```gulp --dist```
 
 ### Notas
-* Para los modulos y recetas incluidos en este proyecto se han utilizado las versiones mas recientes y estable posible.
+Para los modulos y recetas incluidos en este proyecto se han utilizado las versiones mas recientes y estable posible.
+
+### Soporte
+Sientete libre de clonar, probar, mejorar y dar feedback :)
