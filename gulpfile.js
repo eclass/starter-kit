@@ -43,6 +43,18 @@ var test = false;
 var sassOutputStyle = RELEASE ? 'compressed' : 'nested';
 var reload = browserSync.reload;
 
+
+// JSHint
+function jshint(files) {
+  return function () {
+    return gulp.src(files)
+      .pipe(reload({stream: true, once: true}))
+      .pipe($.jshint())
+      .pipe($.jshint.reporter('default'))
+      .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+  };
+}
+
 // Clean up
 gulp.task('clean', del.bind(null, [DEST]));
 
@@ -135,12 +147,14 @@ gulp.task('scripts', function () {
 		.pipe($.if(watch, reload({stream: true})));
 });
 
+gulp.task('jshint', jshint(SRC + '/scripts/**/*.js'));
+
 // Default task
 gulp.task('default', ['serve']);
 
 // Build task
 gulp.task('build', ['clean'], function (cb) {
-	runSequence(['vendor', 'styles', 'scripts', 'templates', 'images'], cb);
+	runSequence(['vendor', 'styles', 'scripts', 'jshint', 'templates', 'images'], cb);
 });
 
 // Watch task

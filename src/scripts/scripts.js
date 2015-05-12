@@ -4,4 +4,4 @@
  * Main scripts
  */
 
-console.log('Welcome to starterkit!')
+console.log('Welcome to starterkit!');
