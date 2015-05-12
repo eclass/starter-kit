@@ -1,6 +1,7 @@
 {
   "name": "starter-kit",
-  "version": "0.1.3",
+  "repository": "https://github.com/eclass/starter-kit",
+  "version": "0.1.3-beta",
   "author": "Raúl Hernández <rhernandez@eclass.com>",
   "contributors": [{
     "name": "Víctor San Martín",
