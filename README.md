@@ -26,4 +26,4 @@ Boilerplate básico basado en Gulp para crear sites/apps, evitando realizar tare
 Para los modulos y recetas incluidos en este proyecto se han utilizado las versiones mas recientes y estable posible.
 
 ### Soporte
-Sientete libre de clonar, probar, mejorar y dar feedback :)
+Sientete libre de clonar, probar, mejorar y dar feedback ヽ( ͝° ͜ʖ͡°)ﾉ
