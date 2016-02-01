@@ -1,181 +1,233 @@
-/*!
+/**
  * Gulpfile Setup
- * author: Raúl Hernández <raulghm@gmail.com, rhernandez@eclass.com>
+ * @author Raul Hernandez <raulghm@gmail.com>
+ * @since 2015-08-31
  */
 
 'use strict';
 
-// Include Gulp and other build automation tools and utilities.
-// See: https://github.com/gulpjs/gulp/blob/master/docs/API.md
+/**
+ * Import modules
+ */
 var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
 var del = require('del');
-var merge = require('merge-stream');
 var runSequence = require('run-sequence');
+var gulpLoadPlugins = require('gulp-load-plugins');
+var merge = require('merge-stream');
+var minimist = require('minimist');
+var pngquant = require('imagemin-pngquant');
 var browserSync = require('browser-sync').create();
-var argv = require('minimist')(process.argv.slice(2));
 
-// Settings
-var SRC = './src';                    // The source input folder
-var DEST = './dist';                  // The build output folder
-var BOWER = './bower_components';     // The bower input folder
-var RELEASE = !!argv.dist;            // Minimize and optimize during a build?
+/**
+ * Setting constants
+ */
+var $ = gulpLoadPlugins();
+var argv = minimist(process.argv.slice(2));
+var SRC = './src/'; // The source input folder
+var DEST = './dist/'; // The build output folder
+var BOWER = './bower_components/'; // The bower input folder
+var RELEASE = !!argv.dist; // Minimize and optimize during the build?
 
-var AUTOPREFIXER_BROWSERS = [         // https://github.com/ai/autoprefixer
-	'ie >= 9',
-	'ie_mob >= 10',
-	'ff >= 30',
-	'chrome >= 34',
-	'safari >= 7',
-	'opera >= 23',
-	'ios >= 7',
-	'android >= 4.4',
-	'bb >= 10'
-];
+/**
+ * jshint and jscs linter
+ * See the .jscsrc and .eslintrc file for based rules
+ */
+gulp.task('jscs', function() {
+	return gulp.src(SRC + '/scripts/**/*.js')
+		.pipe($.jscs())
+		.pipe($.jscsStylish());
+});
 
-var VENDOR_SCRIPTS = [
-	SRC + '/scripts/**/*.js'
-];
+gulp.task('lint', function() {
+	runSequence(['jscs']);
+});
 
-var src = {};
-var watch = false;
-var test = false;
-var sassOutputStyle = RELEASE ? 'compressed' : 'nested';
-var reload = browserSync.reload;
+/**
+ * Vendor scripts
+ */
+gulp.task('vendorScripts', function() {
+	var VENDOR_SCRIPTS = require('./vendor-scripts.js');
 
-
-// JSHint
-function jshint(files) {
-	return function () {
-		return gulp.src(files)
-			.pipe(reload({stream: true, once: true}))
-			.pipe($.jshint())
-			.pipe($.jshint.reporter('default'))
-			.pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
-	};
-}
-
-// Clean up
-gulp.task('clean', del.bind(null, [DEST]));
-
-// 3rd party libraries
-gulp.task('vendor', function () {
 	return merge(
-		gulp.src(BOWER + '/respond/dest/respond.min.js')
-			.pipe(gulp.dest(DEST + '/scripts')),
-		gulp.src(BOWER + '/selectivizr/selectivizr.js')
+		gulp.src(BOWER + '/modernizr/modernizr.js')
+			.pipe($.if(RELEASE, $.uglify({preserveComments: 'some'})))
 			.pipe(gulp.dest(DEST + '/scripts')),
 		gulp.src(BOWER + '/jquery-legacy/dist/jquery.min.js')
 			.pipe($.rename('jquery-legacy.min.js'))
 			.pipe(gulp.dest(DEST + '/scripts')),
 		gulp.src(BOWER + '/jquery-modern/dist/jquery.min.js')
 			.pipe($.rename('jquery-modern.min.js'))
-			.pipe(gulp.dest(DEST + '/scripts'))
+			.pipe(gulp.dest(DEST + '/scripts')),
+		gulp.src(VENDOR_SCRIPTS)
+			.pipe($.concat('vendor.js'))
+			.pipe($.if(RELEASE, $.uglify({preserveComments: 'some'})))
+			.pipe(gulp.dest(DEST + 'scripts'))
 	);
 });
 
-// Images
-gulp.task('images', function () {
-	src.images = SRC + '/images/**/*';
-	return gulp.src(src.images)
-		.pipe(gulp.dest(DEST + '/images'))
-		.pipe($.if(watch, reload({stream: true})));
+/**
+ * Fonts
+ */
+gulp.task('fonts', function() {
+	return gulp.src(SRC + 'fonts/**/*')
+		.pipe($.size({title: 'fonts'}))
+		.pipe(gulp.dest(DEST + 'fonts'));
 });
 
-// Fonts
-gulp.task('fonts', function () {
-	return merge(
-		gulp.src(BOWER + '/font-awesome/fonts/**')
-		.pipe(gulp.dest(DEST + '/fonts/font-awesome'))
-	);
-});
-
-// HTML pages
-gulp.task('templates', function () {
-	src.pages = [SRC + '/templates/pages/**/*', SRC + '/templates/layouts/**/*', SRC + '/templates/partials/**/*'];
-	return gulp.src(SRC + '/templates/pages/*.hbs')
-		.pipe($.assemble({
-			layout: 'default',
-			layoutext: '.hbs',
-			layoutdir: SRC + '/templates/layouts',
-			partials: SRC + '/templates/partials/**/*.hbs'
-		}))
-		.pipe($.if(RELEASE, $.htmlmin({
-			removeComments: true,
-			collapseWhitespace: false,
+/**
+ * Images
+ */
+gulp.task('images', function() {
+	return gulp.src([SRC + 'images/**/**'])
+		.pipe($.if(RELEASE, $.imagemin({
+			progressive: true,
+			svgoPlugins: [{removeViewBox: false}],
+			use: [pngquant()],
 		})))
-		.pipe(gulp.dest(DEST))
-		.pipe($.if(watch, reload({stream: true})));
+		.pipe($.size({title: 'Size images:'}))
+		.pipe(gulp.dest(DEST + 'images'));
 });
 
-// CSS stylesheets
-gulp.task('styles', function () {
-	src.styles = [SRC + '/styles/**/*.scss', '../base/src/styles/**/*.scss'];
+/**
+ * Styles
+ */
+gulp.task('styles', function() {
+	var AUTOPREFIXER_BROWSERS = [
+		'ff >= 30',
+		'chrome >= 34',
+		'safari >= 7',
+		'opera >= 23',
+		'ie >= 9',
+		'ie_mob >= 10',
+		'ios >= 7',
+		'android >= 4.4',
+		'bb >= 10',
+	];
 	return gulp.src(SRC + '/styles/styles.scss')
-		.pipe($.plumber())
-		.pipe($.sass({
-			sourceComments: "normal",
-			outputStyle: sassOutputStyle,
-			errLogToConsole: false,
-			onError: function(err) { 
-				return $.notify().write(err);
-			}
+		.pipe($.plumber({
+			errorHandler: $.notify.onError('Error: <%= error.message %>'),
 		}))
+		.pipe($.if(RELEASE,
+			$.sass.sync({
+				errLogToConsole: false,
+				onError: function(err) {
+					return $.notify().write(err);
+				},
+			}).on('error', $.sass.logError),
+			$.sass.sync({
+				sourceComments: 'normal',
+				outputStyle: 'nested',
+				errLogToConsole: false,
+				onError: function(err) {
+					return $.notify().write(err);
+				},
+			}).on('error', $.sass.logError)
+		))
 		.pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
 		.pipe($.changed(DEST))
-		.pipe($.size({title: 'Size CSS:'}))
+		.pipe($.if(RELEASE, $.cssnano()))
+		.pipe($.size({title: 'Size CSS:', showFiles: true}))
+		.pipe($.if(RELEASE, $.size({title: 'Size CSS:', gzip:true, showFiles: true})))
 		.pipe($.if(RELEASE, $.replace('/*!', '/*'))) // remove special comments
 		.pipe($.if(RELEASE, $.stripCssComments())) // remove comments
-		.pipe($.if(RELEASE, $.minifyCss())) // minify
-		.pipe(gulp.dest(DEST + '/styles'))
-		.pipe($.filter('**/*.css'))
-		.pipe($.if(watch, reload({stream: true})));
+		.pipe(gulp.dest(DEST + 'styles'))
+		.pipe(browserSync.stream({match: '**/*.css'}));
 });
 
-// Scripts
-gulp.task('scripts', function () {
-	src.scripts = [SRC + '/scripts/**/*.js'];
-	return gulp.src(VENDOR_SCRIPTS)
-		.pipe($.if(!RELEASE, $.sourcemaps.init()))
+/**
+ * Scripts
+ */
+gulp.task('scripts', function() {
+	var SCRIPTS = [
+		SRC + 'scripts/**/*.js',
+	];
+
+	return gulp.src(SCRIPTS)
 		.pipe($.concat('scripts.js'))
-		.pipe(gulp.dest(DEST + '/scripts'))
-		.pipe($.if(RELEASE, $.uglify()))
-		.pipe($.if(RELEASE, $.stripDebug()))
-		.pipe($.if(!RELEASE, $.sourcemaps.write('./')))
-		.pipe($.size({title: 'Size JS:'}))
-		.pipe(gulp.dest(DEST + '/scripts'))
-		.pipe($.if(watch, reload({stream: true})));
+		.pipe($.if(RELEASE, $.uglify({preserveComments: 'some'})))
+		.pipe($.size({title: 'scripts'}))
+		.pipe(gulp.dest(DEST + 'scripts'));
 });
 
-gulp.task('jshint', jshint(SRC + '/scripts/**/*.js'));
+/**
+ * Pages
+ */
+gulp.task('pages', function() {
+	return gulp.src(SRC + '/templates/pages/*.hbs')
+		.pipe($.changed(SRC + '/templates', {extension: '.hbs'}))
+		.pipe($.plumber())
+		.pipe($.frontMatter({ property: 'meta' }))
+		.pipe($.hb({
+			debug: false,
+			bustCache: true,
+			data: {
+				// rev: require('./rev-manifest.json'),
+				data: require(SRC + 'data/data.json'),
+				dist: RELEASE,
+			},
+			helpers: SRC + 'helpers/*.js',
+			partials: SRC + 'templates/partials/**/*.hbs',
+		}))
+		.pipe($.if(RELEASE, $.htmlmin({
+			// collapseWhitespace: true,
+			// minifyCSS: true,
+			// minifyJS: true,
+		})))
+		.pipe($.size({title: 'HTML'}))
+		.pipe($.rename({ extname: '.html' }))
+		.pipe(gulp.dest(DEST))
+		.pipe($.if(!RELEASE, browserSync.stream()));
+ });
 
-// Default task
-gulp.task('default', ['serve']);
-
-// Build task
-gulp.task('build', ['clean'], function (cb) {
-	runSequence(['vendor', 'styles', 'scripts', 'jshint', 'templates', 'images'], cb);
+/**
+ * Clean task
+ */
+gulp.task('clean', function() {
+	del([DEST]);
 });
 
-// Watch task
-gulp.task('watch', function () {
-	gulp.watch(src.images, ['images']);
-	gulp.watch(src.pages, ['templates']);
-	gulp.watch(src.styles, ['styles']);
-	gulp.watch(src.scripts, ['scripts']);
-	watch = true;
+/**
+ * Default task
+ */
+gulp.task('default', ['serve', 'watch']);
+
+/**
+ * Build task
+ */
+gulp.task('build', function() {
+	runSequence([
+		'fonts',
+		'images',
+		'vendorScripts',
+		'scripts',
+		'styles',
+		'pages',
+	], function() {
+		'pages';
+	});
 });
 
-// Serve task
-gulp.task('serve', ['build'], function () {
+/**
+ * Watch task
+ */
+gulp.task('watch', function() {
+	gulp.watch('src/images/**/**', ['images']);
+	gulp.watch(['src/styles/**/*.scss', 'src/vendor/styles/**/*.scss'], ['styles']);
+	gulp.watch(['src/scripts/**/*.js', 'src/vendor/scripts/**/*.js'], ['scripts']);
+	gulp.watch(['src/data/**/**', 'src/templates/**/**'], ['pages']);
+});
+
+/**
+ * Serve task
+ */
+gulp.task('serve', ['build'], function() {
 	if (!RELEASE) {
 		browserSync.init({
 			notify: false,
 			open: false,
 			server: {
-				baseDir: DEST
-			}
+				baseDir: DEST,
+			},
 		});
-		runSequence('watch');
 	}
 });

@@ -1,6 +1,13 @@
 ---
-title: Index
-description: content
+title: Starter-kit
+description: Lorem ipsum
+url: http://mysite.com
 ---
 
-<h1>Welcome to starter kit!</h1>
+{{#extend "layout"}}
+	{{#content "content"}}
+		{{> header }}
+		{{> main }}
+		{{> footer }}
+	{{/content}}
+{{/extend}}

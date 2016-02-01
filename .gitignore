@@ -20,6 +20,8 @@ $RECYCLE.BIN/
 !.jshintrc
 !.htaccess
 !.editorconfig
+!.eslintrc
+!.jscsrc
 *~
 
 .DS_Store
@@ -37,4 +39,5 @@ Icon
 npm-debug.log
 bower_components
 node_modules
+styleguide.html
 dist
