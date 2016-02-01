@@ -1,0 +1,11 @@
+/**
+ * @name Footer
+ */
+
+$component: 'Footer';
+
+.#{$component} {
+	&-content {
+		padding: 20px;
+	}
+}

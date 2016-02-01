@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>{{file.meta.title}}</title>
+		<meta name="description" content="{{file.meta.description}}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="icon" type="image/x-icon" href="images/favicons/favicon.ico">
+		<link rel="stylesheet" href="{{#if dist}}{{ assetPath "styles.css" }}{{else}}styles.css{{/if}}">
+		<script src="scripts/modernizr.js"></script>
+	</head>
+	<body class="PageBody">
+		<!--[if lt IE 8]>
+			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+
+		<div class="PageContent">
+			{{#block "content"}}{{/block}}
+		</div>
+
+		<!--[if lt IE 9]>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="scripts/jquery-legacy.min.js"><\/script>')</script>
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="scripts/jquery-modern.min.js"><\/script>')</script>
+    <!--<![endif]-->
+    <script src="{{#if dist}}{{ assetPath "vendor.js" }}{{else}}vendor.js{{/if}}"></script>
+    <script src="{{#if dist}}{{ assetPath "scripts.js" }}{{else}}scripts.js{{/if}}"></script>
+	</body>
+</html>

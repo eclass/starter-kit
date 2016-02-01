@@ -1,0 +1,11 @@
+/**
+ * @name Header
+ */
+
+$component: 'Header';
+
+.#{$component} {
+	&-content {
+		padding: 20px;
+	}
+}

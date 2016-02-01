@@ -1,9 +1,5 @@
-/**
- * Styles
- *
- * Main styles
- */
+// vendor
+@import '../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap';
 
- body {
- 	background-color: #eee;
- }
+// theme
+@import 'theme/theme';

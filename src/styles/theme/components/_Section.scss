@@ -1,0 +1,11 @@
+/**
+ * @name Section
+ */
+
+$component: 'Section';
+
+.#{$component} {
+	&-content {
+		padding: 20px;
+	}
+}
