@@ -14,6 +14,10 @@ Boilerplate básico basado en Gulp para crear sites/apps, evitando realizar tare
 * Aviso de errores en proceso de desarrollo, para consola y notificaciones de sistema.
 * Generación de assets scripts/styles minificados para ambientes de producción.
 
+### TODO
+* Tareas lint
+* Versionamiento de assets finales
+
 ## Como usar
 
 * Clonar https://github.com/eclass/starter-kit.git
@@ -23,7 +27,7 @@ Boilerplate básico basado en Gulp para crear sites/apps, evitando realizar tare
 * Para distribuir a ambiente de producción: ```npm run dist```
 
 ### Notas
-Para los modulos y recetas incluidos en este proyecto se han utilizado las versiones mas recientes y estable posible.
+* Modulos y librerias actualizados a febreo 2016.
 
 ### Soporte
 Sientete libre de clonar, probar, mejorar y dar feedback :)
