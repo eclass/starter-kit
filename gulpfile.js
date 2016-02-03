@@ -69,9 +69,9 @@ gulp.task('vendorScripts', function() {
  * Fonts
  */
 gulp.task('fonts', function() {
-	return gulp.src(SRC + 'fonts/**/*')
+	return gulp.src(BOWER + 'font-awesome/fonts/**/*')
 		.pipe($.size({title: 'fonts'}))
-		.pipe(gulp.dest(DEST + 'fonts'));
+		.pipe(gulp.dest(DEST + 'fonts/font-awesome'));
 });
 
 /**
